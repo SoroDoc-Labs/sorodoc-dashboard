@@ -10,7 +10,9 @@ Web interface for the **SoroDoc** ecosystem. Inspect Soroban contracts, parse sp
   - Markdown Documentation
   - TypeScript Client Interface
   - OpenAPI 3.0 Schema
-- **Copy-to-Clipboard:** Quick export for developer workflows.
+  - Normalized AST (JSON)
+- **Soroban RPC Lookup:** Retrieve on-chain contract code directly via Soroban RPC endpoints without wallet requirements.
+- **Download & Copy:** Quick export of `.md`, `.ts`, and `.json` outputs.
 
 ## Getting Started
 
