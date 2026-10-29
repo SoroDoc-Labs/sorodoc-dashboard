@@ -4,10 +4,12 @@ import "./setup.js";
 import Home from "../app/page.js";
 
 describe("Dashboard Page", () => {
-  it("renders page title and upload button", () => {
+  it("renders page title and upload and rpc lookup sections", () => {
     render(<Home />);
     expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
-    expect(screen.getByText(/Inspect Local Contract WASM/i)).toBeInTheDocument();
+    expect(screen.getByText(/Inspect Local WASM/i)).toBeInTheDocument();
     expect(screen.getByText(/Select WASM File/i)).toBeInTheDocument();
+    expect(screen.getByText(/RPC Contract Lookup/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Fetch Contract Spec/i })).toBeInTheDocument();
   });
 });
