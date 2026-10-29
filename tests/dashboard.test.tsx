@@ -15,7 +15,7 @@ function encodeLeb128(n: number): Buffer {
   return Buffer.from(bytes);
 }
 
-function buildValidMockWasm(): Uint8Array {
+function buildValidMockWasm(): ArrayBuffer {
   const specBytes = Buffer.from([0,0,0,0,0,0,0,2,102,110,0,0,0,0,0,2,102,110,0,0,0,0,0,0,0,0,0,0]);
   const nameBuf = Buffer.from("contractspecv0");
   const secNameLen = encodeLeb128(nameBuf.length);
@@ -28,7 +28,12 @@ function buildValidMockWasm(): Uint8Array {
     secLen,
     secContent,
   ]);
-  return new Uint8Array(wasm);
+  const ab = new ArrayBuffer(wasm.length);
+  const view = new Uint8Array(ab);
+  for (let i = 0; i < wasm.length; ++i) {
+    view[i] = wasm[i]!;
+  }
+  return ab;
 }
 
 describe("Dashboard Interactive QA Test Suite", () => {
@@ -94,7 +99,7 @@ describe("Dashboard Interactive QA Test Suite", () => {
 
   it("displays meaningful error when uploading malformed WASM binary", async () => {
     render(<Home />);
-    const corruptBytes = new Uint8Array([0x00, 0x00, 0x00, 0x00]);
+    const corruptBytes = new Uint8Array([0x00, 0x00, 0x00, 0x00]).buffer;
     const file = new File([corruptBytes], "corrupt.wasm", { type: "application/wasm" });
 
     const input = document.querySelector('input[type="file"]') as HTMLInputElement;
