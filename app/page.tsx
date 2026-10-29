@@ -12,7 +12,7 @@ import {
 export default function Home() {
   const [ast, setAst] = useState<ContractSpecAST | null>(null);
   const [contractName, setContractName] = useState<string>("Contract");
-  const [activeTab, setActiveTab] = useState<"markdown" | "typescript" | "openapi">("markdown");
+  const [activeTab, setActiveTab] = useState<"markdown" | "typescript" | "openapi" | "json">("markdown");
   const [error, setError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [contractIdInput, setContractIdInput] = useState<string>("");
@@ -72,6 +72,8 @@ export default function Home() {
         return generateTypeScript(ast, `${contractName}Client`);
       case "openapi":
         return JSON.stringify(generateOpenApi(ast, { title: `${contractName} API` }), null, 2);
+      case "json":
+        return JSON.stringify(ast, null, 2);
     }
   };
 
@@ -194,6 +196,16 @@ export default function Home() {
               }`}
             >
               OpenAPI 3.0 Schema
+            </button>
+            <button
+              onClick={() => setActiveTab("json")}
+              className={`px-6 py-3 font-medium text-sm transition-colors border-b-2 ${
+                activeTab === "json"
+                  ? "border-indigo-500 text-indigo-400 bg-slate-900/60"
+                  : "border-transparent text-slate-400 hover:text-slate-200"
+              }`}
+            >
+              Normalized AST (JSON)
             </button>
           </div>
 
