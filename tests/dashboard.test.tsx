@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import * as fs from "fs";
+import * as path from "path";
 import "./setup.js";
 import Home from "../app/page.js";
 import * as SoroDocSdk from "@sorodoc/sdk";
@@ -161,6 +163,35 @@ describe("Dashboard Interactive QA Test Suite", () => {
     await waitFor(() => {
       expect(screen.getByText(/Error:/i)).toBeInTheDocument();
       expect(screen.getByText(/RPC Fetch Failure/i)).toBeInTheDocument();
+    });
+  });
+
+  it("handles real Soroban WASM artifacts (custom_types.wasm and errors.wasm) and displays parsed content", async () => {
+    const fixturesDir = path.resolve(__dirname, "../../sorodoc-sdk/fixtures");
+    const customTypesWasmPath = path.join(fixturesDir, "custom_types.wasm");
+    if (!fs.existsSync(customTypesWasmPath)) return;
+
+    render(<Home />);
+    const wasmBuf = fs.readFileSync(customTypesWasmPath);
+    const ab = new ArrayBuffer(wasmBuf.length);
+    new Uint8Array(ab).set(wasmBuf);
+
+    const file = new File([ab], "custom_types.wasm", { type: "application/wasm" });
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(input, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(screen.getByText(/Markdown Documentation/i)).toBeInTheDocument();
+    });
+
+    // Check that custom types documentation is rendered in Markdown view
+    expect(screen.getByText(/Structs/i)).toBeInTheDocument();
+    expect(screen.getByText(/1 Struct\(s\)/i)).toBeInTheDocument();
+
+    // Switch to TypeScript tab and verify interface generation
+    fireEvent.click(screen.getByText(/TypeScript Client/i));
+    await waitFor(() => {
+      expect(screen.getByText(/export interface State/i)).toBeInTheDocument();
     });
   });
 });
