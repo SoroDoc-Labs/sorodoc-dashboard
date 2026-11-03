@@ -18,6 +18,8 @@ export default function Home() {
   const [contractIdInput, setContractIdInput] = useState<string>("");
   const [rpcUrlInput, setRpcUrlInput] = useState<string>("https://soroban-testnet.stellar.org");
 
+  const MAX_WASM_SIZE = 15 * 1024 * 1024; // 15MB resource limit
+
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -25,6 +27,20 @@ export default function Home() {
     setError(null);
     setIsProcessing(true);
     setContractName(file.name.replace(/\.wasm$/i, ""));
+
+    if (file.size === 0) {
+      setError("The uploaded file is empty (0 bytes). Please upload a valid compiled Soroban WASM binary.");
+      setAst(null);
+      setIsProcessing(false);
+      return;
+    }
+
+    if (file.size > MAX_WASM_SIZE) {
+      setError(`File size (${(file.size / (1024 * 1024)).toFixed(1)}MB) exceeds maximum allowed limit of 15MB.`);
+      setAst(null);
+      setIsProcessing(false);
+      return;
+    }
 
     try {
       const arrayBuffer = await file.arrayBuffer();

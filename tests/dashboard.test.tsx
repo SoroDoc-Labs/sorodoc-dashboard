@@ -113,6 +113,20 @@ describe("Dashboard Interactive QA Test Suite", () => {
     });
   });
 
+  it("safely catches empty 0-byte WASM files with an actionable error", async () => {
+    render(<Home />);
+    const emptyBytes = new Uint8Array([]).buffer;
+    const file = new File([emptyBytes], "empty.wasm", { type: "application/wasm" });
+
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(input, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(screen.getByText(/Error:/i)).toBeInTheDocument();
+      expect(screen.getByText(/empty \(0 bytes\)/i)).toBeInTheDocument();
+    });
+  });
+
   it("handles copy-to-clipboard action gracefully", async () => {
     render(<Home />);
     const file = new File([buildValidMockWasm()], "contract.wasm", { type: "application/wasm" });
