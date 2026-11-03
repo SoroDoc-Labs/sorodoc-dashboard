@@ -17,12 +17,14 @@ jobs:
     steps:
       - name: Checkout Dashboard repository
         uses: actions/checkout@v4
+        with:
+          path: sorodoc-dashboard
 
       - name: Checkout SDK repository
         uses: actions/checkout@v4
         with:
           repository: SoroDoc-Labs/sorodoc-sdk
-          path: ../sorodoc-sdk
+          path: sorodoc-sdk
 
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -31,18 +33,26 @@ jobs:
 
       - name: Build SDK
         run: |
-          cd ../sorodoc-sdk
+          cd sorodoc-sdk
           npm ci
           npm run build
 
       - name: Install Dashboard dependencies
-        run: npm ci
+        run: |
+          cd sorodoc-dashboard
+          npm ci
 
       - name: Run Dashboard TypeScript typecheck
-        run: npm run typecheck
+        run: |
+          cd sorodoc-dashboard
+          npm run typecheck
 
       - name: Run Dashboard Vitest test suite
-        run: npm run test
+        run: |
+          cd sorodoc-dashboard
+          npm run test
 
       - name: Run Next.js production build
-        run: npm run build
+        run: |
+          cd sorodoc-dashboard
+          npm run build
