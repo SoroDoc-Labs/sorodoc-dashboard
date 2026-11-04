@@ -24,7 +24,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install Dashboard dependencies
-        run: npm ci
+        run: npm ci || npm install
 
       - name: Run Dashboard TypeScript typecheck
         run: npm run typecheck
