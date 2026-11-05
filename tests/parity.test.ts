@@ -10,7 +10,7 @@ import {
   ContractSpecAST,
 } from "@sorodoc/sdk";
 
-const FIXTURES_DIR = path.resolve(__dirname, "../../sorodoc-sdk/fixtures");
+const FIXTURES_DIR = path.resolve(__dirname, "../fixtures");
 
 describe("Workstream 3 & 9: Cross-Interface Semantic Parity", () => {
   const fixtures = ["custom_types.wasm", "errors.wasm", "increment.wasm"];
