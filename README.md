@@ -16,17 +16,23 @@ Web interface for the **SoroDoc** ecosystem. Inspect Soroban contracts, parse sp
 
 ## Getting Started
 
-```bash
-# 1. Ensure sorodoc-sdk is built
-cd ../sorodoc-sdk
-npm install
-npm run build
+The dashboard consumes the published `@sorodoc/sdk` from npm:
 
-# 2. Run dashboard
-cd ../sorodoc-dashboard
+```bash
+# 1. Install dependencies
 npm install
+
+# 2. Run local development server
 npm run dev
 ```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Architecture & Integration
+
+- **SDK as Single Source of Truth:** The dashboard imports `@sorodoc/sdk` for parsing WASM specifications and generating Markdown, TypeScript interfaces, and OpenAPI schemas. No parsing or code generation logic is duplicated in the dashboard.
+- **Read-Only Model:** SoroDoc Dashboard is strictly an exploration and documentation engine. It does not store keys, sign transactions, or require wallet connections.
+- **RPC Contract Retrieval:** Direct read-only ledger queries to Soroban RPC endpoints to fetch contract code and parse on-chain specifications.
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
